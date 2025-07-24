@@ -1,0 +1,76 @@
+<!--SPA BASED-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>HTML</title>
+  
+  <!-- UIKIT CSS-->
+ <link rel="stylesheet" href="/uikit/css/beer.css">
+
+
+</head>
+<style>
+  body,
+  html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: sans-serif;
+  }
+</style>
+<body>
+  <!--
+  CAUTION: THIS IS  SPA BASED STRUCTURE . IF YOU WANT TO MAKE SPA APPLICATION  USE THIS STRUCTURE.
+  IF YOU WANT NON SPA BASED USE  Non-SPA-Structure.html
+ 
+DIFFERENCE BETTWEEN
+   1. Non-SPA-Structure.html
+          AND
+   2. SPA-Structure.html
+   
+   here 1 is general and non spa based structure.
+   here 2 is spa based structure.
+   
+   if you need SPA Application use 
+   2no structure.
+   if non spa use 1no structure.
+  
+  
+-->
+  <!--core-->
+  <script src="/engine/core/carbon.buildApi.js"></script>
+  <!-- End Core-->
+  <!--PreBuilt i-->
+  <script src="/engine/preBuilt/GridView/GridView.js"></script>
+  <script src="/engine/preBuilt/ScrollView/ScrollView.js"></script>
+  <script src="/engine/preBuilt/SlideView/SlideView.js"></script>
+  <script src="/engine/core/loadExternal.js"></script>
+  
+  <script src="/engine/preBuilt/PageView/PageView.js"></script>
+  <!--END PreBuilt Ui-->
+  <!--Themes js-->
+  <script src="/engine/themes/themes.js"></script>
+  <script src="/engine/themes/themes.config.js"></script>
+  <!--UIKIT JS-->
+  <script src="/uikit/js/beer.js"type="module"></script>
+ <script src="/uikit/js/material-dynamic-colors.min.js"type="module"></script>
+ 
+ <!--themes activating-->
+ <script>
+   Themes.apply("light")
+ </script>
+  
+  
+  
+  <div id="app"></div>
+  <!-- Project -->
+  <!-- View/Demo-->
+  <script src="/view/Demo/PageView.js"></script>
+  
+
+</body>
+</html>

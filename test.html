@@ -1,0 +1,167 @@
+
+
+<div id="app"></div>
+
+<script>
+// === CARBON BUILD API ===
+function create(tag) {
+  const el = document.createElement(tag);
+  const api = {
+    el,
+    id(id) {
+      el.id = id;
+      return this;
+    },
+    class(classes) {
+      if (Array.isArray(classes)) el.classList.add(...classes);
+      else if (typeof classes === "string") el.classList.add(classes);
+      return this;
+    },
+    attrs(attrObj) {
+      for (const key in attrObj) el.setAttribute(key, attrObj[key]);
+      return this;
+    },
+    style(styleObj) {
+      Object.assign(el.style, styleObj);
+      return this;
+    },
+    event(eventMap) {
+      for (const type in eventMap) el.addEventListener(type, eventMap[type]);
+      return this;
+    },
+    html(rawHTML) {
+      el.innerHTML = rawHTML;
+      return this;
+    },
+    text(textContent) {
+      el.innerText = textContent;
+      return this;
+    },
+    add(selector) {
+      const target = typeof selector === "string"
+        ? document.querySelector(selector)
+        : selector instanceof HTMLElement ? selector : null;
+      if (target) target.appendChild(el);
+      return this;
+    },
+    children(childMap) {
+      for (const key in childMap) {
+        const child = childMap[key];
+        if (child && child.el instanceof HTMLElement) {
+          el.appendChild(child.el);
+          this[key] = child;
+        }
+      }
+      return this;
+    },
+  };
+  return api;
+}
+
+// === PAGEVIEW ROUTER ===
+const PageRegistry = {};
+let initialSet = false;
+let NotFoundPage = null;
+
+function PageView({ Name, InitialPage = false, Children }) {
+  const view = create("div")
+    .id("page-" + Name)
+    .class(["page-view"])
+    .children(Children);
+
+  PageRegistry[Name] = view;
+  view.add("#app");
+
+  const current = new URLSearchParams(window.location.search).get("page");
+  if (!initialSet && (current === Name || (!current && InitialPage))) {
+    view.el.classList.add("active");
+    history.replaceState({}, "", "?page=" + Name); // ensure initial state has page
+    initialSet = true;
+  }
+
+  return view;
+}
+
+function OpenPageView(name, fromPopState = false) {
+  let found = false;
+
+  for (const key in PageRegistry) {
+    const page = PageRegistry[key];
+    page.el.classList.remove("active");
+    if (key === name) {
+      page.el.classList.add("active");
+      found = true;
+    }
+  }
+
+  if (!found && NotFoundPage) {
+    for (const key in PageRegistry) PageRegistry[key].el.classList.remove("active");
+    NotFoundPage.el.classList.add("active");
+    if (!fromPopState) {
+      history.pushState({}, "", "?page=notfound");
+    }
+    return;
+  }
+
+  if (!fromPopState) {
+    const current = new URLSearchParams(window.location.search).get("page");
+    if (current !== name) {
+      history.pushState({}, "", "?page=" + name);
+    }
+  }
+}
+
+function BackPageView() {
+  history.back(); // will trigger popstate
+}
+
+function handlePageFromURL() {
+  const pageName = new URLSearchParams(window.location.search).get("page");
+  OpenPageView(pageName || "", true);
+}
+
+window.addEventListener("DOMContentLoaded", handlePageFromURL);
+window.addEventListener("popstate", handlePageFromURL);
+</script>
+
+<script>
+// === MAIN PAGES ===
+PageView({
+  Name: "home",
+  InitialPage: true,
+  Children: {
+    title: create("h1").text("Home Page"),
+    btn: create("button").text("Go to About").event({
+      click: () => OpenPageView("about")
+    }),
+    back: create("button").text("Back").event({
+      click: () => BackPageView()
+    }),
+  },
+});
+
+PageView({
+  Name: "about",
+  Children: {
+    title: create("h1").text("About Page"),
+    btn: create("button").text("Go to Home").event({
+      click: () => OpenPageView("home")
+    }),
+    back: create("button").text("Back").event({
+      click: () => BackPageView()
+    }),
+  },
+});
+
+// === NOT FOUND PAGE ===
+NotFoundPage = create("div")
+  .id("page-notfound")
+  .class(["page-view"])
+  .children({
+    msg: create("h2").text("❌ Page View Not Found"),
+    back: create("button").text("Back").event({
+      click: () => BackPageView()
+    }),
+  })
+  .add("#app");
+</script>

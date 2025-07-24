@@ -1,0 +1,16 @@
+.grid-view-container {
+  display: grid;
+  padding: 0;
+}
+
+.grid-view-item {
+  background-color: lightcoral;
+  text-align: center;
+  border: 1px solid #999;
+  font-size: 18px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
